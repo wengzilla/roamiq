@@ -23,28 +23,7 @@
   <body>
 
     <div class="site-wrapper">
-      <div class="site-wrapper-inner">
-        <div class="cover-container">
-          <div class="masthead clearfix">
-            <div class="inner">
-              <h3 class="masthead-brand">RoamIQ</h3>
-              <!-- <nav>
-                <ul class="nav masthead-nav">
-                  <li class="active"><a href="#">Home</a></li>
-                </ul>
-              </nav> -->
-            </div>
-          </div>
-          <div class="inner cover" id="example">
-            <h1 class="cover-heading">Fly Smarter.</h1>
-            <p class="lead">Maximize the time you spend on the ground.</p>
-
-            <div id="form"></div>
-          </div>
-        </div>
-
-        <div id="results-container" class="cover-container">
-        </div>
+      <div class="site-wrapper-inner" id="page">
       </div>
     </div>
   </body>
@@ -122,17 +101,25 @@
           )
         });
 
-        return(
-          <div className="result-nodes">
-            {resultNodes}
-          </div>
-        )
+        if(this.props.showSpinner) {
+          return(
+            <div className="result-nodes">
+              <img src="/images/spinner.gif" />
+            </div>
+          )
+        } else {
+          return(
+            <div className="result-nodes">
+              {resultNodes}
+            </div>
+          )
+        }
       }
     })
 
     var Form = React.createClass({
       getInitialState: function() {
-        return { departure: "4/14/2015", return: "4/16/2015", counter: 0 }
+        return { departure: "4/14/2015", return: "4/16/2015", counter: 0}
       },
       onDepartureChange: function(event) {
         this.setState({ departure: event.target.value })
@@ -143,6 +130,7 @@
       clickSubmit: function(event) {
         event.preventDefault();
         this.setState({counter: this.state.counter + 1});
+        this.props.setSpinnerState(true)
         $.ajax({
           url: this.props.url,
           dataType: "json",
@@ -152,7 +140,8 @@
             return: this.state.return
           },
           success: function(data) {
-            React.render(<ResultsContainer results={data} key={this.state.counter} />, document.getElementById('results-container'))
+            this.props.setSpinnerState(false);
+            this.props.setResults(data);
           }.bind(this)
         });
       },
@@ -176,9 +165,48 @@
       }
     })
 
+    var Page = React.createClass({
+      getInitialState: function() {
+        return { results: {}, showSpinner: false }
+      },
+      setSpinnerState: function(bool) {
+        this.setState({showSpinner: bool})
+      },
+      setResults: function(results) {
+        this.setState({results: results})
+      },
+      render: function() {
+        return(
+          <div>
+            <div className="cover-container">
+              <div className="masthead clearfix">
+                <div className="inner">
+                  <h3 className="masthead-brand">RoamIQ</h3>
+                  <nav>
+                    <ul className="nav masthead-nav">
+                      <li className="active"><a href="#">Home</a></li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+              <div className="inner cover" id="example">
+                <h1 className="cover-heading">Fly Smarter.</h1>
+                <p className="lead">Maximize the time you spend on the ground.</p>
+
+                <Form url="http://ec2-52-1-167-9.compute-1.amazonaws.com/output.php" setSpinnerState={this.setSpinnerState} setResults={this.setResults}/>
+              </div>
+            </div>
+
+            <div className="cover-container">
+              <ResultsContainer results={this.state.results} showSpinner={this.state.showSpinner} />
+            </div>
+          </div>
+      )}
+    })
+
     React.render(
-      <Form url="http://ec2-52-1-167-9.compute-1.amazonaws.com/output.php"/>,
-      document.getElementById('form')
+      <Page />,
+      document.getElementById('page')
     );
   </script>
 </html>
