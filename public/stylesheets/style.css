@@ -1,8 +1,74 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
 }
+
+.form-group {
+  margin-left: 10px;
+}
+
+.result-nodes {
+  margin-top: 50px;
+  background: white;
+  text-shadow: none;
+  color: black;
+}
+
+.result {
+  padding: 20px 0;
+  border-bottom: 1px solid #AEAEAE;
+}
+
+.destination {
+  font-size: 20px;
+  color: black;
+}
+
+.single-arrow {
+  width: 15px;
+  height: 7px;
+  background-image: url("http://www.kayak.com/res/images/newImagesStructure/arrows/right/summary-arrow.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  display: inline-block;
+  margin: 3px 10px;
+}
+
+.return-leg {
+  margin-top: 10px;
+}
+
+.airport {
+  color: #999;
+  margin-right: 10px;
+}
+
+.fun-index {
+  font-size: 25px;
+  font-weight: bold;
+  padding: 10px 0px;
+}
+
+.fun-label {
+  font-size: 15px;
+  color: red;
+}
+
+.fun-container {
+  border: 1px solid black;
+  padding: 10px 5px;
+  width: 100px;
+}
+
+.left {
+  padding-top: 20px;
+  overflow: auto;
+}
+
+.book {
+  margin: 10px;
+}
+

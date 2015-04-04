@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/cover.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="http://fb.me/react-0.13.1.js"></script>
+    <script src="/javascripts/moment.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.13.1.js"></script>
+  </head>
+  <body>
+
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">RoamIQ</h3>
+              <!-- <nav>
+                <ul class="nav masthead-nav">
+                  <li class="active"><a href="#">Home</a></li>
+                </ul>
+              </nav> -->
+            </div>
+          </div>
+          <div class="inner cover" id="example">
+            <h1 class="cover-heading">Fly Smarter.</h1>
+            <p class="lead">Maximize the time you spend on the ground.</p>
+
+            <div id="form"></div>
+          </div>
+        </div>
+
+        <div id="results-container" class="cover-container">
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script type="text/jsx">
+    var Result = React.createClass({
+      getInitialState: function() {
+        return ({
+          destination: this.props.result.destination,
+          leaveDepartureTime: this.props.result.leaveDepartureTime,
+          leaveArrivalTime: this.props.result.leaveArrivalTime,
+          returnDepartureTime: this.props.result.returnDepartureTime,
+          returnArrivalTime: this.props.result.returnArrivalTime,
+          price: this.props.result.price,
+          funIndex: this.props.result.funIndex,
+          url: this.props.result.url
+        })
+      },
+      formatTime: function(minutes) {
+        var d = new Date();
+        d.setHours(0,minutes,0,0);
+        return moment(d).format("HH:mm");
+      },
+      render: function() {
+        console.log(this.props.result)
+        return(
+          <div className="row result">
+            <div className="left col-lg-9">
+              <div className="col-lg-3 destination">
+                {this.state.destination}
+                <div>
+                  ${this.state.price}
+                </div>
+                <div>
+                  <a href={this.state.url} className="btn btn-success book" target="_blank">Book Now</a>
+                </div>
+              </div>
+              <div className="col-lg-9">
+                <div className="departure-leg">
+                  <span className="airport">LOG</span>
+                  {this.formatTime(this.state.leaveDepartureTime)}
+                  <span className="single-arrow"></span>
+                  {this.formatTime(this.state.leaveArrivalTime)}
+                </div>
+                <div className="return-leg">
+                  <span className="airport">{this.state.destination}</span>
+                  {this.formatTime(this.state.returnDepartureTime)}
+                  <span className="single-arrow"></span>
+                  {this.formatTime(this.state.returnArrivalTime)}
+                </div>
+              </div>
+            </div>
+            <div className="right col-lg-3">
+              <div className="fun-container">
+                <span className="fun-label">Fun Index</span>
+                <div className="fun-index">{parseInt(this.state.funIndex)}</div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+    })
+
+    var ResultsContainer = React.createClass({
+      render: function() {
+        var results = []
+
+        for (var key in this.props.results) {
+          results.push(this.props.results[key])
+        }
+
+        resultNodes = results.map(function (result, index) {
+          return (
+            <Result result={result} />
+          )
+        });
+
+        return(
+          <div className="result-nodes">
+            {resultNodes}
+          </div>
+        )
+      }
+    })
+
+    var Form = React.createClass({
+      getInitialState: function() {
+        return { departure: "4/14/2015", return: "4/16/2015" }
+      },
+      onDepartureChange: function(event) {
+        this.setState({ departure: event.target.value })
+      },
+      onReturnChange: function(event) {
+        this.setState({ return: event.target.value })
+      },
+      clickSubmit: function(event) {
+        event.preventDefault();
+        this.setState({hasLiked: true, likeCount: this.state.likeCount + 1});
+        $.ajax({
+          url: this.props.url,
+          dataType: "json",
+          type: "GET",
+          data: {
+            leave: this.state.departure,
+            return: this.state.return
+          },
+          success: function(data) {
+            React.render(<ResultsContainer results={data}/>, document.getElementById('results-container'))
+          } 
+        });
+      },
+      render: function() {
+        return(
+          <form className="form-inline">
+            <div className="form-group">
+              <label className="sr-only">Departure Date</label>
+              <input type="text" className="form-control" placeholder="Departure Date" value={this.state.departure} onChange={this.onDepartureChange}/>
+            </div>
+
+            <div className="form-group">
+              <label className="sr-only">Return Date</label>
+              <input type="text" className="form-control" placeholder="Return Date" value={this.state.return} onChange={this.onReturnChange}/>
+            </div>
+            <div className="form-group">
+              <button type="submit" className="btn btn-success" onClick={this.clickSubmit}>Search Now!</button>
+            </div>
+          </form>
+        )
+      }
+    })
+
+    React.render(
+      <Form url="http://ec2-52-1-167-9.compute-1.amazonaws.com/output.php"/>,
+      document.getElementById('form')
+    );
+  </script>
+</html>
