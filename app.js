@@ -10,12 +10,6 @@ var routes = require('./routes/index');
 
 var app = express();
 
-
-app.use(function(req, res, next) {
-  res.locals._ = require('underscore');
-  next();
-});
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -28,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '/src')));
 app.use(express.static(path.join(__dirname, '/public')));
+app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 
 app.use('/', routes);
 

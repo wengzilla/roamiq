@@ -1,6 +1,15 @@
 module.exports = function(grunt) {
   grunt.initConfig ({
-    bower: grunt.file.readJSON('public/javascrips/bower.json'),
+    bower: grunt.file.readJSON('bower.json'),
+    wiredep: {
+      task: {
+        // Point to the files that should be updated when
+        // you run `grunt wiredep`
+        src: [
+          'views/*.hbs',   // .html support...
+        ]
+      }
+    },
     sass: {
       dist: {
         files: {
@@ -8,7 +17,9 @@ module.exports = function(grunt) {
         }
       }
     }
+  });
 
+  grunt.loadNpmTasks('grunt-wiredep');
   grunt.loadNpmTasks('grunt-sass');
   grunt.registerTask('default', ['sass']);
 };

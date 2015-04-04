@@ -10,6 +10,15 @@
     <script src="http://fb.me/react-0.13.1.js"></script>
     <script src="/javascripts/moment.js"></script>
     <script src="http://fb.me/JSXTransformer-0.13.1.js"></script>
+    <!-- bower:css -->
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <!-- endbower -->
+
+    <!-- bower:js -->
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../bower_components/underscore/underscore.js"></script>
+    <!-- endbower -->
   </head>
   <body>
 
@@ -91,7 +100,7 @@
             <div className="right col-lg-3">
               <div className="fun-container">
                 <span className="fun-label">Fun Index</span>
-                <div className="fun-index">{parseInt(this.state.funIndex)}</div>
+                <div className="fun-index">{100 - parseInt(this.state.funIndex)}</div>
               </div>
             </div>
           </div>
@@ -107,7 +116,7 @@
           results.push(this.props.results[key])
         }
 
-        resultNodes = _.sort(results, function(result){ return -1 * result.funIndex }).map(function (result, index) {
+        resultNodes = _.sortBy(results, function(result){ return result.funIndex }).map(function (result, index) {
           return (
             <Result result={result} />
           )
