@@ -107,7 +107,7 @@
           results.push(this.props.results[key])
         }
 
-        resultNodes = results.map(function (result, index) {
+        resultNodes = _.sort(results, function(result){ return -1 * result.funIndex }).map(function (result, index) {
           return (
             <Result result={result} />
           )

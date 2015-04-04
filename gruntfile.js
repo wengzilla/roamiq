@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
   grunt.initConfig ({
+    bower: grunt.file.readJSON('public/javascrips/bower.json'),
     sass: {
       dist: {
         files: {
