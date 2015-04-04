@@ -118,7 +118,7 @@
 
         resultNodes = _.sortBy(results, function(result){ return result.funIndex }).map(function (result, index) {
           return (
-            <Result result={result} />
+            <Result result={result} key={result.destination} />
           )
         });
 
@@ -132,7 +132,7 @@
 
     var Form = React.createClass({
       getInitialState: function() {
-        return { departure: "4/14/2015", return: "4/16/2015" }
+        return { departure: "4/14/2015", return: "4/16/2015", counter: 0 }
       },
       onDepartureChange: function(event) {
         this.setState({ departure: event.target.value })
@@ -142,7 +142,7 @@
       },
       clickSubmit: function(event) {
         event.preventDefault();
-        this.setState({hasLiked: true, likeCount: this.state.likeCount + 1});
+        this.setState({counter: this.state.counter + 1});
         $.ajax({
           url: this.props.url,
           dataType: "json",
@@ -152,8 +152,8 @@
             return: this.state.return
           },
           success: function(data) {
-            React.render(<ResultsContainer results={data}/>, document.getElementById('results-container'))
-          } 
+            React.render(<ResultsContainer results={data} key={this.state.counter} />, document.getElementById('results-container'))
+          }.bind(this)
         });
       },
       render: function() {
